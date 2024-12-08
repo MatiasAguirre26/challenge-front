@@ -1,5 +1,3 @@
-// utils/validations.js
-
 export const validateProjectForm = (formData) => {
     const errors = {};
     
