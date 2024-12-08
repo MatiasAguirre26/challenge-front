@@ -13,8 +13,8 @@ const useProjectStore = create(
                     projects: [
                         ...state.projects, 
                         { 
-                            ...project, id: nanoid(),// Agrega un ID único al proyecto
-                            createdAt: format(new Date(), 'dd/MM/yyyy h:mm a') // Fecha y hora actual formateada
+                            ...project, id: nanoid(),
+                            createdAt: format(new Date(), 'dd/MM/yyyy h:mm a')
                         }
                     ],
                 })),
@@ -37,7 +37,7 @@ const useProjectStore = create(
             },
         }),
         {
-            name: 'project-storage', // Nombre de la key en localStorage
+            name: 'project-storage',
         }
         
     )
