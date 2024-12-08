@@ -1,101 +1,108 @@
+"use client";
+
 import Image from "next/image";
+import Header from "@/components/header";
+import Subheader from "@/components/subheader";
+import ActionMenu from "@/components/action-menu";
+import useProjectStore from '@/stores/projectStore';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col items-center row-start-2 gap-8 sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const projects = useProjectStore((state) => state.projects);
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Header />
+      <Subheader title="My projects" showAddProjectButton={true} showBackButton={false} />
+
+      <main className="p-0 lg:p-6">
+        {/* Vista responsive */}
+        <div className="flex-col hidden text-black bg-white rounded-lg shadow-md md:flex">
+          <div className="flex font-bold bg-gray-200">
+            <div className="w-1/4 px-4 py-2">Project Info</div>
+            <div className="w-1/4 px-4 py-2">Project Manager</div>
+            <div className="w-1/4 px-4 py-2">Assigned to</div>
+            <div className="w-1/6 px-4 py-2">Status</div>
+            <div className="w-1/6 px-4 py-2 text-center">Action</div>
+          </div>
+
+          {projects.map((project) => (
+            <div className="flex items-center border-t" key={project.id}>
+              <div className="w-1/4 px-4 py-4">
+                <p className="text-gray-800">{project.name}</p>
+                <p className="text-sm text-gray-400">
+                  Creation date: {project.createdAt}
+                </p>
+              </div>
+
+              <div className="w-1/4 px-4 py-4">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center w-8 h-8 mr-4 font-bold text-orange-700 bg-orange-200 rounded-full">
+                    WC
+                  </span>
+                  <span>{project.projectManager}</span>
+                </div>
+              </div>
+
+              <div className="w-1/4 px-4 py-4">
+                <div className="flex items-center">
+                  <span className="w-8 h-8 mr-4 overflow-hidden bg-gray-200 rounded-full">
+                    <Image 
+                      src="/assets/assigned_user.jpg" 
+                      alt="Assigned user" 
+                      width={80}  
+                      height={80} 
+                      className="rounded-full"
+                    />
+                  </span>
+                  <span>{project.assignedTo}</span>
+                </div>
+              </div>
+
+              <div className="w-1/6 px-4 py-4">
+                <span className="px-2 py-1 text-gray-700 bg-gray-200 border-2 border-gray-300 rounded-lg">{project.status}</span>
+              </div>
+
+              <div className="flex justify-center w-1/6 px-4 py-4 text-center">
+                <ActionMenu projectId={project.id}/>
+              </div>
+            </div>
+          ))}
         </div>
+
+        {/* Vista para pantallas pequeñas */}
+        <div className="block md:hidden p-none">
+          <div className="text-black bg-white rounded-lg shadow-md">
+            {projects.map((project) => (
+              <div key={project.id} className="p-4 border-b last:border-b-0">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-800">{project.name}</p>
+                    <p className="text-sm text-gray-400">
+                      Creation date: {project.createdAt}
+                    </p>
+                  </div>
+                  <ActionMenu projectId={project.id}/>
+                </div>
+                <div className="flex justify-between mt-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-8 h-8 overflow-hidden bg-gray-200 rounded-full">
+                      <Image 
+                        src="/assets/assigned_user.jpg" 
+                        alt="Assigned user" 
+                        width={62}  
+                        height={62} 
+                        className="rounded-full"
+                      />
+                    </span>
+                    <span>{project.assignedTo || 'Usuario desconocido'}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </main>
-      <footer className="flex flex-wrap items-center justify-center row-start-3 gap-6">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
